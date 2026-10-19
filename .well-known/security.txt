@@ -1,0 +1,4 @@
+Contact: mailto:hello@usefluke.it
+Expires: 2027-10-18T00:00:00.000Z
+Preferred-Languages: en, it
+Canonical: https://usefluke.it/.well-known/security.txt
