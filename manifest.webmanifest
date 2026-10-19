@@ -1,7 +1,7 @@
 {
   "name": "Fluke",
   "short_name": "Fluke",
-  "description": "AI trading research. Look beyond the backtest.",
+  "description": "A public skill test for prediction-market wallets. Open data, open method.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#E5E1D5",

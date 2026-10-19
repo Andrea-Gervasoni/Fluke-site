@@ -6,6 +6,15 @@
 Direzione: **A · Scrivania 1984**. Sullo schermo del computer c'è la sua interfaccia del 1984 (1-bit, menu, finestra, icone), disegnata nitida a ×2: è il pezzo che Andrea ama di più. Attraverso la lente la stessa finestra diventa a colori e mostra tutta la ricerca.
 Lingua: solo inglese (copy del brand kit). Niente foto di persone: solo oggetti 3D generati in codice.
 
+## Quattordicesimo giro (2026-10-19): dai bot ai wallet, solo testi
+Nuovo posizionamento: un test pubblico di abilità per i wallet dei mercati predittivi (Polymarket): skilled, lucky o suspicious? Stile visivo invariato: stessi colori, font, componenti, animazioni, computer, lente.
+- **Strumenti: due, non tre.** Fluke Index (gratis, in corso) e Fluke Check (gratis). Via Verified, Quant Bot, prezzi, Tally. Sullo schermo: icona tabella, app INDEX con wallet A–F "NOT REAL WALLETS", contatore 0/2; il cartello HOW TO dice "CLICK THE TWO ICONS".
+- **Metodo**: le tre abitudini diventano TEST the skill / CHECK it lasts / FLAG, never accuse (stesso binario, stessi oggetti 3D; il foglio sotto la lente è il Note No. 2).
+- **Nuove pagine di carta** dopo il metodo, costruite con i pannelli di "What we do": How the test works (4 passi, grafici "Illustrative chart"), What research says (3 schede con fonte e stato), Data and limits. Sono opache: il taglio di camera metodo → macchina da scrivere avviene dietro la prima (`cuts.how`), e le quattro sezioni opache di fila contano come una sola copertura (`OPAQUE` nel director).
+- **Where it started**: il vecchio "Before you trust a backtest", identico, spostato dopo le nuove pagine come strumento dell'articolo 1.
+- **Research log**: voci vere con data e stato (`LOG` in `what.js`), la riga "Running" in arancio.
+- Regola: ogni numero ha fonte e stato (Reported / Computed by us / Illustrative). Mai "insider" detto di un wallet.
+
 ## Tredicesimo giro (2026-10-18): l'istruzione non imita un pulsante
 La pillola blu "Click the three icons…" sembrava premibile e imitava il vero Continue. Ora è una **finestra dell'interfaccia vecchia** (`js/svc-win.js`): 1-bit, barra del titolo a righe con quadratino di chiusura, "HOW TO", ombra dura, testo con lo stesso font a pixel dello schermo, tre quadratini che si riempiono di blu man mano che apri le app e un contatore; a tre aperte dice "ALL THREE OPENED / NOW PRESS CONTINUE" con una freccia in giù verso il vero pulsante. Si muove pochissimo in 3D (±2 px, ±2° in 9 s, `prefers-reduced-motion` la ferma). Regola: ciò che non si preme non deve somigliare a ciò che si preme.
 

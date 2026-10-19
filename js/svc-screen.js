@@ -1,4 +1,4 @@
-// The three services, drawn on the glass of the 3D computer itself: the same 1-bit interface as inside it.
+// The two tools, drawn on the glass of the 3D computer itself: the same 1-bit interface as inside it.
 // Logical resolution 320×214 (bigger pixels than the 512×342 desktop, so the words can be read), painted at ×3.
 import { FONT_ROWS, F_GLYPH } from './screen-art.js';
 
@@ -33,17 +33,17 @@ export const HAND = [
 ];
 
 export const ICONS = {
-  check: { label: 'CHECK', x: 286, y: 30 },
-  verified: { label: 'VERIFIED', x: 286, y: 88 },
-  bot: { label: 'QUANT BOT', x: 286, y: 146 },
+  index: { label: 'INDEX', x: 286, y: 62 },
+  check: { label: 'CHECK', x: 286, y: 120 },
 };
+const N = Object.keys(ICONS).length;
 export const WIN = { x: 8, y: 20, w: 246, h: 186, bar: 13 };
 export const CLOSE = { x: WIN.x + 6, y: WIN.y + 3, w: 8, h: 8 };
 // on a phone the window opens in the middle and the icons step aside: one thing at a time on a small screen
 let compact = false;
 export function setCompact(on) { compact = on; WIN.x = on ? Math.round((LW - WIN.w) / 2) : 8; CLOSE.x = WIN.x + 6; }
 export const isCompact = () => compact;
-const TITLES = { check: 'FLUKE CHECK', verified: 'FLUKE VERIFIED', bot: 'FLUKE QUANT BOT' };
+const TITLES = { index: 'FLUKE INDEX', check: 'FLUKE CHECK' };
 
 // the box that answers a click on an icon (icon and label)
 export const iconBox = (id) => { const c = ICONS[id]; return { x: c.x - 30, y: c.y - 2, w: 60, h: 40 }; };
@@ -102,19 +102,13 @@ export function createSvcScreen() {
       for (let i = 0; i < 6; i++) px(x + 15 + i, y + i, 1, 1);
       px(x + 15, y, 1, 6); px(x + 15, y + 6, 6, 1);
       line(x + 7, y + 14, x + 10, y + 17, 2); line(x + 10, y + 17, x + 16, y + 9, 2);
-    } else if (id === 'verified') {
-      // a seal: a toothed rim around a tick
-      const R = (u, v) => { const a = Math.atan2(v - 12, u - 12); return 10.6 + 1.3 * Math.cos(a * 16); };
-      shape(x, y, 24, 24, (u, v) => Math.hypot(u - 12, v - 12) <= R(u, v), fg);
-      shape(x, y, 24, 24, (u, v) => Math.hypot(u - 12, v - 12) <= R(u, v) - 1.4, bg);
-      shape(x, y, 24, 24, (u, v) => { const d = Math.hypot(u - 12, v - 12); return d <= 7.4 && d > 6.3; }, fg);
-      ctx.fillStyle = fg; line(x + 8, y + 12, x + 10, y + 14, 2); line(x + 10, y + 14, x + 15, y + 9, 2);
     } else {
-      // a little monitor with a rising line
-      ctx.fillStyle = bg; px(x + 1, y + 2, 22, 16);
-      ctx.fillStyle = fg; px(x + 1, y + 2, 22, 1); px(x + 1, y + 17, 22, 1); px(x + 1, y + 2, 1, 16); px(x + 22, y + 2, 1, 16);
-      px(x + 10, y + 18, 4, 3); px(x + 6, y + 21, 12, 2);
-      line(x + 4, y + 13, x + 8, y + 9); line(x + 8, y + 9, x + 11, y + 12); line(x + 11, y + 12, x + 15, y + 6); line(x + 15, y + 6, x + 19, y + 9);
+      // a ruled table: a filled header row, two dotted rules, the first column marked off
+      ctx.fillStyle = bg; px(x + 1, y + 1, 22, 22);
+      ctx.fillStyle = fg; px(x + 1, y + 1, 22, 1); px(x + 1, y + 22, 22, 1); px(x + 1, y + 1, 1, 22); px(x + 22, y + 1, 1, 22);
+      px(x + 1, y + 1, 22, 6);
+      for (const ry of [12, 17]) for (let xx = x + 3; xx < x + 21; xx += 2) px(xx, y + ry);
+      px(x + 9, y + 7, 1, 15);
     }
     const lw = tw(c.label) + 4;
     ctx.fillStyle = sel ? INK : PAPER; px(c.x - lw / 2, y + 27, lw, 10);
@@ -164,66 +158,31 @@ export function createSvcScreen() {
     });
     ctx.fillStyle = INK; px(R, base, 116, 1);
     center('TRIES', R + 58, base + 13, INK);
-    footer('EXAMPLE. REGISTRATION OPENS SOON.');
+    footer('ILLUSTRATIVE EXAMPLE. FROM ARTICLE 1.');
   }
 
-  function appVerified(t) {
-    const X = WIN.x + 8, Y = WIN.y + 20;
-    // the seal
-    const cx = X + 40, cy = Y + 56;
-    const R = (u, v) => { const a = Math.atan2(v, u); return 36 + 2.4 * Math.cos(a * 30); };
-    shape(cx - 40, cy - 40, 80, 80, (u, v) => Math.hypot(u - 40, v - 40) <= R(u - 40, v - 40), INK);
-    shape(cx - 40, cy - 40, 80, 80, (u, v) => { const d = Math.hypot(u - 40, v - 40); return d <= 31 && d > 30; }, PAPER);
-    center('DSR', cx + 1, cy - 17, PAPER);
-    center('0.97', cx + 1, cy - 6, PAPER, 2);
-    center('LIVE', cx + 1, cy + 12, PAPER);
-    center('SAMPLE BADGE', cx, Y + 100, INK);
-    center('14 MONTHS LIVE', cx, Y + 110, INK);
-    // the public profile
-    const P = X + 86, W = 144;
-    box(P, Y, W, 112, PAPER);
-    ctx.fillStyle = INK; px(P, Y, W, 11); text('PUBLIC PROFILE', P + 4, Y + 2, PAPER); text('SAMPLE', P + W - 40, Y + 2, PAPER);
-    text('SAMPLE STRATEGY', P + 5, Y + 16, INK);
-    [['SIGNALS', '1,284', COBALT], ['MONTHS', '14', INK], ['EDITED', 'NEVER', INK]].forEach(([k, v, c], i) => { text(k, P + 5 + i * 47, Y + 30, INK); text(v, P + 5 + i * 47, Y + 40, c); });
-    ctx.fillStyle = INK; px(P + 4, Y + 51, W - 8, 1);
-    text('#', P + 5, Y + 55, INK); text('TIME', P + 35, Y + 55, INK); text('HASH', P + 71, Y + 55, INK);
-    ctx.fillStyle = INK; px(P + 4, Y + 64, W - 8, 1);
-    const rows = [['1284', '09:14', '0X9F3A..C21E'], ['1283', '08:02', '0X41BE..07D9'], ['1282', '16:47', '0XD0C8..A5F3']];
-    rows.forEach((r, i) => { if (t * 4 > i) { text(r[0], P + 5, Y + 68 + i * 13, INK); text(r[1], P + 35, Y + 68 + i * 13, INK); text(r[2], P + 71, Y + 68 + i * 13, INK); } for (let xx = P + 4; xx < P + W - 4; xx += 2) { ctx.fillStyle = INK; px(xx, Y + 77 + i * 13); } });
-    // the order of things: the signal is stamped before the trade
-    const steps = ['1 SIGNAL', '2 STAMP', '3 TRADE', '4 PUBLIC'];
-    steps.forEach((s, i) => {
-      const bx = X + i * 58, on = i === 1;
-      box(bx, Y + 120, 56, 14, on ? INK : PAPER);
-      center(s, bx + 28, Y + 124, on ? PAPER : INK);
-      if (i < 3) { ctx.fillStyle = INK; px(bx + 56, Y + 126, 2, 1); }
-    });
-    footer('SAMPLE. REGISTRATION OPENS SOON.');
-  }
-
-  function appBot(t) {
+  // the index: a preview of the open table. Wallets A to F are invented, and the screen says so
+  function appIndex(t) {
     const X = WIN.x + 8, Y = WIN.y + 20, Wd = WIN.w - 16;
-    box(X + Wd / 2 - 74, Y + 2, 148, 22, PAPER);
-    center('COMING SOON', X + Wd / 2, Y + 6, INK, 2);
-    // your account, the key, the bot
-    const A = { x: X, y: Y + 38, w: 98, h: 66 }, B = { x: X + Wd - 100, y: Y + 38, w: 100, h: 66 };
-    box(A.x, A.y, A.w, A.h, PAPER);
-    ['YOUR EXCHANGE', 'ACCOUNT'].forEach((s, i) => text(s, A.x + 5, A.y + 6 + i * 10, INK));
-    text('YOUR MONEY', A.x + 5, A.y + 30, COBALT); text('STAYS HERE', A.x + 5, A.y + 40, COBALT);
-    text('NO WITHDRAWALS', A.x + 5, A.y + 54, INK);
-    ctx.fillStyle = COBALT; px(B.x + 3, B.y + 3, B.w, B.h);
-    box(B.x, B.y, B.w, B.h, INK);
-    ['FLUKE QUANT BOT', '', 'RUNS ON', 'YOUR SIDE', '', 'YOU SET THE RISK'].forEach((s, i) => s && text(s, B.x + 5, B.y + 6 + i * 9, PAPER));
-    // the key: a dotted line drawn from the bot to the account
-    const x0 = A.x + A.w + 3, x1 = B.x - 4, k = ease(clamp01(t / 0.8));
-    ctx.fillStyle = INK;
-    for (let xx = x1; xx > x1 - (x1 - x0) * k; xx -= 3) px(xx - 1, A.y + 33, 2, 1);
-    if (k > 0.98) { px(x0, A.y + 31, 1, 5); px(x0 + 1, A.y + 32, 1, 3); }
-    center('KEY', (x0 + x1) / 2, A.y + 22, INK);
-    center('TRADE-ONLY KEY. YOU CAN STOP IT', X + Wd / 2, Y + 118, INK);
-    center('AT ANY TIME. FLUKE NEVER HOLDS', X + Wd / 2, Y + 128, INK);
-    center('YOUR MONEY.', X + Wd / 2, Y + 138, INK);
-    footer('WAITLIST OPENS SOON.');
+    ctx.fillStyle = INK; px(X, Y, Wd, 11);
+    text('PREVIEW', X + 4, Y + 2, PAPER); const nr = 'NOT REAL WALLETS'; text(nr, X + Wd - 4 - tw(nr), Y + 2, PAPER);
+    const col = [X + 5, X + 66, X + 122, X + 172];
+    ['WALLET', 'SKILL P', 'LASTS', 'LEAK'].forEach((h, i) => text(h, col[i], Y + 16, INK));
+    ctx.fillStyle = INK; px(X, Y + 25, Wd, 1);
+    const rows = [['A', '0.001', 'YES', 'LOW'], ['B', '0.004', 'YES', 'HIGH'], ['C', '0.03', 'NO', 'LOW'], ['D', '0.21', '-', 'LOW'], ['E', '0.48', '-', 'LOW'], ['F', '0.83', '-', 'LOW']];
+    rows.forEach(([w, p, lasts, leak], i) => {
+      const ry = Y + 29 + i * 13;
+      if (t * 7 > i) {
+        text(`WALLET ${w}`, col[0], ry, INK);
+        text(p, col[1], ry, +p < 0.05 ? COBALT : INK);
+        text(lasts, col[2], ry, INK);
+        // a high leakage score is marked out to be looked at, not to be judged
+        if (leak === 'HIGH') { ctx.fillStyle = INK; px(col[3] - 2, ry - 2, tw(leak) + 4, 11); text(leak, col[3], ry, PAPER); } else text(leak, col[3], ry, INK);
+      }
+      ctx.fillStyle = INK; for (let xx = X; xx < X + Wd; xx += 2) px(xx, ry + 9);
+    });
+    ['P: HOW OFTEN CHANCE BEATS IT.', 'LASTS: PASSES AGAIN ON NEW EVENTS.', 'HIGH LEAK: A REASON TO LOOK CLOSER.'].forEach((s2, i) => text(s2, X + 2, Y + 110 + i * 11, INK));
+    footer('ILLUSTRATIVE, NOT REAL WALLETS.');
   }
 
   function cursor(cx, cy, pressed, hand) {
@@ -248,15 +207,15 @@ export function createSvcScreen() {
     // menu bar
     ctx.fillStyle = PAPER; px(0, 0, LW, 13); ctx.fillStyle = INK; px(0, 13, LW, 1);
     ctx.fillStyle = COBALT; F_GLYPH.forEach((row, r) => [...row].forEach((c, i) => { if (c === '#' && r % 1 === 0) px(5 + i, 2 + r); }));
-    let mx = 18; for (const m of ['FILE', 'EDIT', 'SERVICES']) { text(m, mx, 3, INK); mx += tw(m) + 10; }
-    const cnt = `${st.seen.size}/3 OPENED`; text(cnt, LW - 6 - tw(cnt), 3, INK);
+    let mx = 18; for (const m of ['FILE', 'EDIT', 'TOOLS']) { text(m, mx, 3, INK); mx += tw(m) + 10; }
+    const cnt = `${st.seen.size}/${N} OPENED`; text(cnt, LW - 6 - tw(cnt), 3, INK);
     const showIcons = !(compact && st.open && st.openT >= 0.4);
     if (showIcons) for (const id of Object.keys(ICONS)) { icon(id, st.sel === id || st.open === id, st.seen.has(id)); if (!st.open && !st.seen.has(id) && st.sel !== id) ants(id, st.phase | 0); }
     if (!st.open) {
-      const l1 = st.seen.size === 3 ? 'ALL THREE' : 'CLICK THE', l2 = st.seen.size === 3 ? 'OPENED' : 'THREE APPS', w = tw(l2, 2) + 18, cx = 118;
+      const all = st.seen.size === N, l1 = all ? 'BOTH' : 'CLICK THE', l2 = all ? 'OPENED' : 'TWO APPS', w = tw(l2, 2) + 18, cx = 118;
       box(cx - w / 2, 80, w, 40, PAPER);
       center(l1, cx, 86, INK, 2); center(l2, cx, 102, INK, 2);
-      if (st.seen.size < 3) center('THEY ARE ON THE RIGHT >', cx, 128, INK);
+      if (!all) center('THEY ARE ON THE RIGHT >', cx, 128, INK);
     } else if (st.openT < 0.4) {
       // the zoom of the old Macs: outlines grow from the icon to the window
       const a = iconBox(st.open), q = st.openT / 0.4;
@@ -271,7 +230,7 @@ export function createSvcScreen() {
     } else {
       windowChrome(TITLES[st.open]);
       const t = clamp01((st.openT - 0.4) / 0.6);
-      if (st.open === 'check') appCheck(t); else if (st.open === 'verified') appVerified(t); else appBot(t);
+      if (st.open === 'check') appCheck(t); else appIndex(t);
     }
     if (st.cursor.show) cursor(st.cursor.x, st.cursor.y, st.cursor.down, st.hand);
   }

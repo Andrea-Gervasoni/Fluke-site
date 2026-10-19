@@ -52,13 +52,15 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
   };
   const svc = createServices({ reduced, phone, screen: stage.svcScreen, onDirty: () => { stage.mac.svcDirty(); stage.markDirty(); }, onContinue: goOn });
   const tops = [];
-  const cuts = { what: 0, svc: 0, check: 0, faq: 0 };
+  const cuts = { what: 0, svc: 0, how: 0, faq: 0 };
+  // opaque sections, or runs of them back to back: while one fills the screen nothing of the stage can be seen
+  const OPAQUE = [['what', 'what'], ['how', 'check'], ['faq', 'faq']];
   const inside = createInside({ canvas: $('#inside'), ui: $('#inside-ui'), data: stage.data, reduced });
   const crt = $('.crt');
 
   function measure() {
     vh = stage.world.view.fh || innerHeight; vw = innerWidth; A = vw / vh;
-    ['top', 'idea', 'winner', 'what', 'services', 'method', 'check', 'notes', 'faq', 'end'].forEach((id) => {
+    ['top', 'idea', 'winner', 'what', 'services', 'method', 'how', 'research', 'limits', 'check', 'notes', 'faq', 'end'].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
       const r = el.getBoundingClientRect();
@@ -68,7 +70,8 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     sec.endScroll = { top: er.top + scrollY, h: er.height };
     // a cut happens while an opaque section covers the whole screen: nothing on the stage can be seen jumping
     const mid = (id) => sec[id].top + Math.max(0, sec[id].h - vh) * 0.5;
-    cuts.what = mid('what'); cuts.svc = sec.method.top; cuts.check = mid('check'); cuts.faq = mid('faq');
+    // after the method, the camera cuts behind the first paper page that covers it (How the test works)
+    cuts.what = mid('what'); cuts.svc = sec.method.top; cuts.how = mid('how'); cuts.faq = mid('faq');
     tops.length = 0;
     dom.tlines.forEach((el) => { const r = el.parentElement.getBoundingClientRect(); tops.push(r.top + scrollY); });
     placeThumb(true);
@@ -120,6 +123,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     what.layout();
     measureLetters();
     if (dom.seg) { glass?.refract(dom.seg, { radius: 27, bevel: 14, strength: 30 }); glass?.light(dom.seg); }
+    $$('.pane').forEach((p) => { if (p.closest('#what')) return; glass?.refract(p, { radius: 28, bevel: 30, strength: 64, blur: 2.5 }); glass?.light(p); });
     S.introCam = stage.introCamFor(A);
     keys = buildKeys();
   }
@@ -141,7 +145,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     cut(cuts.what, winnerCam(0.5), svcCam());
     at('services', 0, svcCam()); at('services', 1, svcCam());
     cut(cuts.svc, svcCam(), methodCam(M.x0));
-    cut(cuts.check, methodCam(M.x0 + M.step * 2), typeCam());
+    cut(cuts.how, methodCam(M.x0 + M.step * 2), typeCam());
     at('notes', 0, typeCam());
     k.push({ y: sec.notes.top + Math.max(0, sec.notes.h - vh), cam: typeCam(1.2) });
     cut(cuts.faq, typeCam(1.2), endCam());
@@ -162,7 +166,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
   // the page colour only changes while an opaque section hides the change
   function bodyColor(y) {
     if (y < cuts.svc) return COLORS.paper;
-    if (y < cuts.check) return COLORS.cobalt;
+    if (y < cuts.how) return COLORS.cobalt;
     if (y < cuts.faq) return COLORS.paper;
     return COLORS.ink;
   }
@@ -171,7 +175,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     const p = y + 40;
     const inside = (id) => sec[id] && p >= sec[id].top && p < sec[id].top + sec[id].h;
     if (inside('check') || inside('end')) return true;
-    if (inside('what') || inside('faq') || inside('notes') || inside('top') || inside('idea')) return false;
+    if (inside('what') || inside('how') || inside('research') || inside('limits') || inside('faq') || inside('notes') || inside('top') || inside('idea')) return false;
     if (inside('method')) return true;
     return y >= cuts.faq;
   }
@@ -220,7 +224,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     const y = scrollY;
     nav?.setVelocity((y - lastY) / Math.max(dt, 1 / 240));
     // crossing a cut: the camera and the loupe jump with it (the screen is covered)
-    if (lastY >= 0) for (const c of [cuts.what, cuts.svc, cuts.check, cuts.faq]) if ((lastY < c) !== (y < c)) S.snapCam = true;
+    if (lastY >= 0) for (const c of [cuts.what, cuts.svc, cuts.how, cuts.faq]) if ((lastY < c) !== (y < c)) S.snapCam = true;
     // the page is moving: the big glass panes go light until it stops
     if (Math.abs(y - lastY) > 0.4) { moveT = performance.now(); if (!moving) { moving = true; document.documentElement.classList.add('is-moving'); } }
     else if (moving && performance.now() - moveT > 220) { moving = false; document.documentElement.classList.remove('is-moving'); }
@@ -248,7 +252,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     const insideA = y >= w.top - 1 && y <= w.top + w.h ? smooth((pw - 0.08) / 0.05) * (1 - smooth((pw - 0.93) / 0.05)) : 0;
     $('#inside').style.opacity = insideA.toFixed(3); crt.style.opacity = insideA.toFixed(3);
     // nothing of the 3D stage can be seen while an opaque section fills the screen, or the desktop of the computer is full screen: do not draw it
-    const covered = ['what', 'check', 'faq'].some((id) => y >= sec[id].top + 2 && y + vh <= sec[id].top + sec[id].h - 2);
+    const covered = OPAQUE.some(([a, b]) => y >= sec[a].top + 2 && y + vh <= sec[b].top + sec[b].h - 2);
     S.skipRender = insideA >= 0.999 || covered;
     if (insideA > 0) inside.render(pw, 1 / 60);
     if (pw > 0.9 || y > winnerEnd) { S.lensMode = 'off'; S.lensOverride = { u: 0.5, v: 0.5, r: 1.25 }; }
@@ -280,7 +284,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     what.update(y, vh);
 
     // method: three objects on a rail, each one holds still for a while
-    const inMethod = y >= cuts.svc && y < cuts.check;
+    const inMethod = y >= cuts.svc && y < cuts.how;
     const pq = clamp01((y - m.top) / (m.h - vh));
     const t2 = pq * 2, i0 = Math.min(1, Math.floor(t2)), f = t2 - i0;
     const eIdx = pq >= 1 ? 2 : i0 + easeIO(clamp01((f - 0.5) / 0.4));
@@ -303,7 +307,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     S.method.flip = whole + smooth(smooth(part));
     S.methodVisible = inMethod;
     S.deskVisible = y < cuts.svc || y >= cuts.faq;
-    S.typeVisible = y >= cuts.check && y < cuts.faq;
+    S.typeVisible = y >= cuts.how && y < cuts.faq;
     S.typeProgress = clamp01((y - (n.top - vh * 0.75)) / Math.max(1, n.h - vh * 0.6));
     if (S.typeVisible) S.loupeFree = awayFrom(S.cam);
     const rs = `translate3d(${(-eIdx * vw).toFixed(1)}px,0,0)`;
@@ -325,7 +329,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
 
     // which section is the reader in (the menu droplet rests there)
     let here = 'top';
-    for (const id of ['idea', 'winner', 'what', 'services', 'method', 'check', 'notes', 'faq', 'end']) if (sec[id] && y + vh * 0.45 >= sec[id].top) here = id;
+    for (const id of ['idea', 'winner', 'what', 'services', 'method', 'how', 'research', 'limits', 'check', 'notes', 'faq', 'end']) if (sec[id] && y + vh * 0.45 >= sec[id].top) here = id;
     nav?.setSection(here);
 
     liftLetters();
@@ -390,7 +394,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     const target = reduced ? Math.max(strong, soft) * 0.8 : Math.max(strong, soft);
     const cur = +(blinds.style.opacity || 0);
     // on the dark sections the light from the window goes at once
-    blinds.style.opacity = (cur + (target * 0.55 - cur) * (y >= cuts.faq || (y >= cuts.svc && y < cuts.check) ? 0.25 : 0.06)).toFixed(3);
+    blinds.style.opacity = (cur + (target * 0.55 - cur) * (y >= cuts.faq || (y >= cuts.svc && y < cuts.how) ? 0.25 : 0.06)).toFixed(3);
     const drift = reduced ? 0 : Math.sin(blindsT * 0.18) * 30;
     blinds.style.transform = `translate3d(${(drift - y * 0.04).toFixed(1)}px, ${(-y * 0.12 % 150).toFixed(1)}px, 0)`;
     // the warm pool under the lamp follows the lamp on screen
@@ -437,7 +441,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     gsap.set('.pane', { opacity: 0, y: 70, rotateX: -8, transformPerspective: 1200, transformOrigin: '50% 0%' });
     gsap.set('.qa', { opacity: 0, y: 26 });
     gsap.set('.foot-brand, .foot-cols > div, .foot-bar', { opacity: 0, y: 26 });
-    once('.glassboard', () => gsap.to('.pane', { opacity: 1, y: 0, rotateX: 0, duration: 1.3, ease: 'expo.out', stagger: 0.12 }), 0.12);
+    once('.glassboard', (board) => gsap.to(board.querySelectorAll('.pane'), { opacity: 1, y: 0, rotateX: 0, duration: 1.3, ease: 'expo.out', stagger: 0.12 }), 0.12);
     once('.faq-list', () => gsap.to('.qa', { opacity: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.08 }), 0.15);
     once('.giant--notes', () => { gsap.to('.giant--notes > *', { opacity: 1, yPercent: 0, duration: 0.5, ease: 'steps(6)', stagger: 0.14 }); gsap.to('.notes-body > *', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.12, delay: 0.7 }); }, 0.2);
     once('.giant--end', () => { gsap.to('.giant--end > *', { opacity: 1, scaleY: 1, duration: 0.55, ease: 'steps(6)', stagger: 0.14 }); gsap.to('.end-top .btn-wrap', { opacity: 1, y: 0, duration: 1, ease: 'expo.out', delay: 0.5 }); }, 0.1);

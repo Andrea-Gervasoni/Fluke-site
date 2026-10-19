@@ -3,8 +3,8 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/RoundedBoxGeometry.js';
 
-const LINES = ['What if the best', 'model was just', 'lucky?', '', 'Look at the', 'whole search.'];
-const HEADER = ['FLUKE / FIELD NOTES', 'No. 1'];
+const LINES = ['What if the best', 'wallet was just', 'lucky?', '', 'Look at the', 'whole record.'];
+const HEADER = ['FLUKE / FIELD NOTES', 'No. 2'];
 const CW = 0.1;          // character width on the paper (exaggerated so it reads on screen)
 const LH = 0.19;         // line height
 const PAPER_W = 2.5, PAPER_H = 3.2;

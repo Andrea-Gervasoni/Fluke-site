@@ -4,7 +4,10 @@
  *
  *   node tools/set-legal.mjs --name "Full Name" --address "Street 1, 00100 City, Italy" \
  *     --domain fluke.com --hello hello@fluke.com --privacy privacy@fluke.com \
- *     --hosting "Cloudflare Pages (Cloudflare, Inc.)" --waitlist "Tally (Tally B.V., Belgium)" --tally https://tally.so/r/XXXXXX
+ *     --hosting "Cloudflare Pages (Cloudflare, Inc.)" --article1 https://medium.com/@you/the-article
+ *
+ * --article1 is the address of article 1 on Medium ("The Best Crypto Trading AI Might Just Be the Luckiest"):
+ * it fills every link to it on the page and in the research note.
  *
  * Any option you leave out keeps its yellow placeholder. Then run: node tests/launch-check.mjs
  */
@@ -15,7 +18,7 @@ const args = Object.fromEntries(process.argv.slice(2).map((a, i, r) => a.startsW
 const root = new URL('..', import.meta.url).pathname;
 const map = {
   LEGAL_NAME: args.name, ADDRESS: args.address, DOMAIN: args.domain, EMAIL_HELLO: args.hello,
-  TALLY_FORM: args.tally, EMAIL_PRIVACY: args.privacy || (args.domain ? `privacy@${args.domain}` : undefined), HOSTING: args.hosting, WAITLIST_PROVIDER: args.waitlist,
+  EMAIL_PRIVACY: args.privacy || (args.domain ? `privacy@${args.domain}` : undefined), HOSTING: args.hosting, ARTICLE_1: args.article1,
 };
 const skip = new Set(['node_modules', 'vendor', '.backup', 'preview', 'tests', 'tools', 'fonts', 'assets']);
 const exts = new Set(['.html', '.txt', '.xml', '.webmanifest']);
@@ -27,12 +30,8 @@ function* walk(d) {
   }
 }
 let n = 0;
-// --tally none: publish without the waitlist links (the sentences end where the links were)
-const noForm = args.tally === 'none';
-if (noForm) map.TALLY_FORM = undefined;
 for (const f of walk(root)) {
   let t = readFileSync(f, 'utf8'), o = t;
-  if (noForm) t = t.replace(/(?:Registration opens soon|Not on sale yet): <a href="\[\[TALLY_FORM\]\][^>]*>[^<]*<\/a>\./g, (m) => (m.startsWith('Not') ? 'Not on sale yet.' : 'Registration opens soon.'));
   for (const [k, v] of Object.entries(map)) {
     if (!v) continue;
     const esc = v.replace(/&/g, '&amp;').replace(/</g, '&lt;');

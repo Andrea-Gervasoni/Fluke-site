@@ -33,7 +33,11 @@ Il sito si carica a mano, come preferisci.
 6. **Settings → Web analytics → Enable** (statistiche gratuite, senza cookie, nessun codice da aggiungere).
 7. Per ogni modifica futura: rifai il punto 1 e carica di nuovo da **Create deployment**.
 
-## 5 · Lista d'attesa con Tally (gratis)
+## 5 · Avvisi: niente moduli
+Il sito non ha più moduli né liste d'attesa (Tally non serve). Il tasto "Get notified" della Fluke Index apre una mail a `hello@usefluke.it` con oggetto "Notify me: Fluke Index". Conserva solo l'indirizzo di chi scrive; quando l'Index apre, una sola mail di risposta, poi cancella gli indirizzi (è ciò che dice privacy.html).
+
+<details><summary>Vecchia procedura Tally (non più usata)</summary>
+
 1. Crea un account su tally.so e un **nuovo modulo**.
 2. Campi:
    - **Email** (obbligatorio, tipo email).
@@ -45,14 +49,16 @@ Il sito si carica a mano, come preferisci.
 5. Pubblica e **copia l'indirizzo del modulo** (`https://tally.so/r/xxxxxx`). Mandamelo e lo metto nei tre link del sito.
 6. Quando un tool si apre, scrivi una sola mail (da `hello@`) a chi aveva scelto quel tool. Chi ti chiede di uscire va cancellato anche da Tally (Submissions → Delete).
 
-Se vuoi pubblicare **prima** di avere il modulo: `node tools/set-legal.mjs --tally none`. I tre link spariscono e il sito dice solo "Registration opens soon".
+</details>
+
+Prima di pubblicare serve il link dell'articolo 1 su Medium: `node tools/set-legal.mjs --article1 https://medium.com/...` (il controllo di lancio si ferma finché manca).
 
 ## 6 · Prima di annunciare il sito
 - Apri `https://usefluke.it` dal telefono (iPhone e Android) e scorri tutto.
 - Controlla il lucchetto HTTPS e che `https://www.usefluke.it` porti alla versione senza www.
 - Cerca "Fluke" su **EUIPO TMview** e sull'archivio **UIBM**: "Fluke" è un marchio noto della Fluke Corporation (strumenti di misura). Settore diverso, quindi non è un blocco, ma controlla prima di investire sul nome.
-- **Fai leggere a un avvocato** `privacy.html`, `terms.html`, `legal-notice.html` e chiedi un parere sul Quant Bot (chiavi API, regole sui servizi di investimento) **prima** di promuoverlo o aprire la sua lista d'attesa.
-- **Partita IVA**: non serve finché il sito è una vetrina gratuita. Serve **prima di vendere** Fluke Verified in modo continuativo (anche sotto i 5.000 €). In quel momento aggiungi anche un indirizzo nelle pagine legali.
+- **Fai leggere a un avvocato** `privacy.html`, `terms.html`, `legal-notice.html` e chiedi un parere su come pubblicare punteggi legati a indirizzi di wallet **prima** che la Fluke Index mostri wallet veri.
+- **Partita IVA**: non serve: il sito è ricerca gratuita, senza prezzi né abbonamenti.
 
 ## Dove sono i dati inseriti
 Tutto (nome, email, dominio) è già compilato nelle pagine. Per cambiare qualcosa dopo, modifica i file `privacy.html`, `terms.html`, `legal-notice.html`, `index.html` a mano oppure chiedimelo.

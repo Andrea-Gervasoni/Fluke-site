@@ -1,6 +1,6 @@
-// The services showcase: the computer stays on the desk, its three apps are the choices.
+// The tools showcase: the computer stays on the desk, its two apps are the choices.
 // The apps are drawn on the glass of the 3D computer (svc-screen.js); an invisible layer over the glass takes the clicks.
-// Nothing here collects data or pretends to work: it explains each service and shows an example.
+// Nothing here collects data or pretends to work: it explains each tool and shows an illustrative example.
 import { LW, LH, ICONS, WIN, CLOSE, iconBox, setCompact, isCompact } from './svc-screen.js';
 import { createWin } from './svc-win.js';
 
@@ -12,13 +12,13 @@ export function createServices({ reduced, phone, screen, onDirty, onContinue }) 
   const $ = (s, r = document) => r.querySelector(s);
   const pin = $('#svc-pin'); if (!pin) return null;
   const os = $('#os'), text = $('#svc-text'), go = $('#svc-go'), foot = $('.svc-foot'), count = $('#svc-count b'), next = $('#svc-next');
-  const ids = ['check', 'verified', 'bot'];
+  const ids = ['index', 'check'];
   const items = Object.fromEntries(ids.map((id) => [id, $(`.svc-item[data-svc="${id}"]`)]));
   const texts = Object.fromEntries(['none', ...ids].map((id) => [id, $(`.svc-p[data-p="${id}"]`)]));
   const say = (id) => Object.entries(texts).forEach(([k, el]) => el.classList.toggle('is-on', k === id));
 
   const sign = createWin($('#svc-win'), { scale: phone ? 1.7 : 2.1 });
-  sign.draw(0);
+  sign.draw(0, ids.length);
   const REST = { x: 128, y: 142 };
   const st = { open: null, openT: 1, sel: null, hand: false, phase: 0, seen: new Set(), cursor: { x: REST.x, y: REST.y, down: false, show: true } };
   let dirty = true, openAt = 0, inView = false, lastDraw = -1e9;
@@ -32,8 +32,8 @@ export function createServices({ reduced, phone, screen, onDirty, onContinue }) 
     ids.forEach((k) => items[k].querySelector('.svc-tab').setAttribute('aria-expanded', String(k === id)));
     say(id); unhint();
     st.seen.add(id); items[id].classList.add('is-seen');
-    count.textContent = String(st.seen.size); next.hidden = st.seen.size === 3; sign.draw(st.seen.size);
-    if (st.seen.size === 3 && !foot.classList.contains('is-done')) { foot.classList.add('is-done'); $('a', go).removeAttribute('tabindex'); }
+    count.textContent = String(st.seen.size); next.hidden = st.seen.size === ids.length; sign.draw(st.seen.size, ids.length);
+    if (st.seen.size === ids.length && !foot.classList.contains('is-done')) { foot.classList.add('is-done'); $('a', go).removeAttribute('tabindex'); }
     dirty = true;
   }
   function close() {
@@ -125,7 +125,7 @@ export function createServices({ reduced, phone, screen, onDirty, onContinue }) 
     const now = performance.now();
     if (st.open && st.openT < 1) { st.openT = clamp01((now - openAt) / 1100); dirty = true; }
     // the dotted outline round the apps not yet opened walks, a few steps a second
-    if (!st.open && st.seen.size < 3 && !reduced) { const ph = Math.floor(now / 140) % 4; if (ph !== st.phase) { st.phase = ph; dirty = true; } }
+    if (!st.open && st.seen.size < ids.length && !reduced) { const ph = Math.floor(now / 140) % 4; if (ph !== st.phase) { st.phase = ph; dirty = true; } }
     if (user.over && now - user.at < 4000) {
       if (st.cursor.x !== user.x || st.cursor.y !== user.y) { st.cursor.x = user.x; st.cursor.y = user.y; dirty = true; }
       stopDemo(now);
