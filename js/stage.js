@@ -219,7 +219,7 @@ export async function createStage({ canvas, phone, reduced }) {
     const u = mac.uniforms;
     const view = [cur.x, cur.y, cur.z, cur.lx, cur.ly, cur.lz, cur.fov, cur.sx, cur.sy + (state.syRaw || 0)].map((n) => n.toFixed(3)).join(',');
     const look = [u.uDraw.value, u.uLensR.value, u.uLens.value.x, u.uLens.value.y, u.uPower.value, u.uDot.value, u.uSvc.value, u.uMag.value].map((n) => (+n).toFixed(3)).join(',');
-    const frameSig = `${view}|${look}|${sig}|${state.introMix}|${lamp.light.intensity.toFixed(2)}|${world.view.w}x${world.view.h}|${world.pixelCap}`;
+    const frameSig = `${view}|${look}|${sig}|${state.introMix}|${lamp.light.intensity.toFixed(2)}|${mac.logo ?? ''}|${world.view.w}x${world.view.h}|${world.pixelCap}`;
     const changed = frameSig !== lastFrameSig || texDirty;
     if (!state.skipRender && (changed || t - lastDraw > 0.066)) {
       world.render(); lastDraw = t; lastFrameSig = frameSig; texDirty = false;

@@ -221,6 +221,8 @@ export function createMac({ canvases, logoTexture, aniso = 8, grain = null }) {
     setDraw(d) { uniforms.uDraw.value = d; },
     setDot(d) { uniforms.uDot.value = d; },
     setSvc(v) { uniforms.uSvc.value = v; },
+    // the wordmark on the case; it steps back during the close-up on the floppy, where it would sit behind the words
+    setLogo(v) { decal.material.opacity = v; decal.visible = v > 0.01; this.logo = v; },
     svcDirty() { uniforms.tS.value.needsUpdate = true; },
     update(t) { /* the tube's flicker is far too faint to be worth redrawing the page 60 times a second */ },
   };

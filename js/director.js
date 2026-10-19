@@ -82,7 +82,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
   const heroCam = () => stage.heroCamera(A);
   // the idea: a macro on the floppy in the drive, 'Trial 17 (the good one)'
   const ideaCam = () => portrait()
-    ? { x: 0.9, y: 4.6, z: 3.9, lx: 0.6, ly: 0.75, lz: 1.75, fov: 26, sx: 0, sy: 0.3 }
+    ? { x: 0.9, y: 4.6, z: 3.9, lx: 0.6, ly: 0.75, lz: 1.75, fov: 26, sx: 0, sy: 0.08 }
     : { x: 2.0, y: 1.55, z: 3.9, lx: 0.5, ly: 0.86, lz: 1.6, fov: 26, sx: 0.27, sy: 0 };
   const winnerCam = (close = 0) => {
     const share = portrait() ? 0.9 : 0.56;
@@ -219,7 +219,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
   const awayFrom = (c) => ({ x: lerp(c.lx, c.x, 0.4) + 1.2, y: c.y + 3.8, z: lerp(c.lz, c.z, 0.4), rz: 0.9, rx: 0, scale: 1.1, reveal: 0 });
   const lerpPose = (a, b, t) => ({ x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), z: lerp(a.z, b.z, t), rz: lerp(a.rz ?? 0.55, b.rz ?? 0.55, t), rx: lerp(a.rx ?? 0, b.rx ?? 0, t), scale: lerp(a.scale ?? 1, b.scale ?? 1, t), reveal: lerp(a.reveal ?? 0, b.reveal ?? 0, t) });
 
-  let lastY = -1, wipeOn = false, moving = false, moveT = 0;
+  let lastY = -1, wipeOn = false, moving = false, moveT = 0, lastLogo = 1;
   function update(dt = 1 / 60) {
     const y = scrollY;
     nav?.setVelocity((y - lastY) / Math.max(dt, 1 / 240));
@@ -258,6 +258,15 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     if (pw > 0.9 || y > winnerEnd) { S.lensMode = 'off'; S.lensOverride = { u: 0.5, v: 0.5, r: 1.25 }; }
     if (y >= cuts.what && y < cuts.svc) S.loupeFree = awayFrom(S.cam);
     nav?.setHidden(insideA > 0.6);
+
+    // the close-up on the floppy: the wordmark on the case would sit right behind the words, so it fades away while the camera is there, and back as it leaves
+    {
+      const inA = sec.top.top + 0.3 * sec.top.h, inB = sec.idea.top + 0.1 * sec.idea.h;
+      const outA = w.top, outB = w.top + 0.1 * Math.max(0, w.h - vh);
+      const here = smooth(clamp01((y - inA) / Math.max(1, inB - inA))) * (1 - smooth(clamp01((y - outA) / Math.max(1, outB - outA))));
+      const logo = +(1 - here).toFixed(3);
+      if (logo !== lastLogo) { stage.mac.setLogo(logo); lastLogo = logo; }
+    }
 
     // the services: the computer comes up with the section, holds while it is pinned, and leaves with it
     const sv = sec.services;
