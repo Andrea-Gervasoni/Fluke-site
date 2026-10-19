@@ -1,7 +1,7 @@
 // The three objects of the "method" section. All generated.
-//   Track    → a rotary card file: one card per attempt, flipped one by one
-//   Test     → a slide rule (the original sanity check)
-//   Question → a printed note under a loupe (read the fine print)
+//   Test the skill     → a rotary card file: one card per attempt, flipped one by one
+//   Check it lasts     → a slide rule (measure again, the original sanity check)
+//   Flag, never accuse → a printed note under a loupe (read the fine print, look closer)
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/RoundedBoxGeometry.js';
 
@@ -180,7 +180,7 @@ export function createNote(M, data, aniso) {
   const x = c.getContext('2d');
   x.fillStyle = '#F6F2E6'; x.fillRect(0, 0, c.width, c.height);
   x.fillStyle = '#14151F'; x.font = FONT(600, 30); x.textBaseline = 'alphabetic';
-  x.fillText('Fluke / Research note', 64, 96);
+  x.fillText('Fluke / Research note No. 2', 64, 96);
   x.fillStyle = '#0A3AE5'; x.font = '400 150px Anton, Impact, sans-serif'; x.fillText('AN EDGE.', 64, 270); x.fillText('OR A FLUKE?', 64, 410);
   // the chart: the whole search, with the winner picked out
   const px0 = 64, px1 = 936, py0 = 500, py1 = 800;
@@ -196,13 +196,13 @@ export function createNote(M, data, aniso) {
   x.fillText('Look at the search, not just the selection.', 64, 900);
   x.fillStyle = 'rgba(20,21,31,.78)'; x.font = FONT(400, 27);
   const lines = [
-    'What was tried before this model? How many alternatives',
-    'were discarded? Which decisions changed after someone',
-    'saw the results? A strong backtest is the beginning of a',
-    'conversation. It should not be the end of one.',
+    'Is a winning wallet skilled, lucky or suspicious? A profit',
+    'record alone cannot tell. So we test it: flip each bet',
+    '10,000 times, check it again on events it has not seen,',
+    'correct for the number of wallets tested.',
     '',
-    'Deflated Sharpe Ratio. Probability of Backtest Overfitting.',
-    'Tools for asking sharper questions, not certificates.',
+    'A high leakage score means suspicious, never insider.',
+    'A reason to look closer, not a verdict.',
   ];
   lines.forEach((t, i) => x.fillText(t, 64, 960 + i * 40));
   x.fillStyle = 'rgba(20,21,31,.5)'; x.font = FONT(400, 22);

@@ -113,9 +113,9 @@ a { color: inherit; }
 .btn-icon svg + svg { transform: translateY(-160%); }
 .btn[href="#winner"]:hover .btn-icon svg:first-child { transform: translateY(160%); }
 .btn[href="#winner"]:hover .btn-icon svg + svg { transform: translateY(0); }
-.btn[href="#note"] .btn-icon svg + svg { transform: translateX(-160%); }
-.btn[href="#note"]:hover .btn-icon svg:first-child { transform: translateX(160%); }
-.btn[href="#note"]:hover .btn-icon svg + svg { transform: translateX(0); }
+.btn[href="#note"] .btn-icon svg + svg, .btn[target="_blank"] .btn-icon svg + svg { transform: translateX(-160%); }
+.btn[href="#note"]:hover .btn-icon svg:first-child, .btn[target="_blank"]:hover .btn-icon svg:first-child { transform: translateX(160%); }
+.btn[href="#note"]:hover .btn-icon svg + svg, .btn[target="_blank"]:hover .btn-icon svg + svg { transform: translateX(0); }
 
 /* ───────── loader ───────── */
 .loader { position: fixed; inset: 0; z-index: 300; pointer-events: none; visibility: hidden; }
@@ -225,7 +225,7 @@ a { color: inherit; }
 .lite .blinds, .lite .lamp-glow { display: none; }
 /* while the page is moving, the big glass panes drop their backdrop filter (re-blurring what is under them on every frame was the slowest thing on the page); it comes back 0.2 s after the scroll stops */
 .is-moving .lg, .is-moving .btn--liquid { -webkit-backdrop-filter: blur(6px) saturate(1.5) !important; backdrop-filter: blur(6px) saturate(1.5) !important; }
-.is-moving .what .pane { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; background-color: rgba(250, 248, 240, .66) !important; }
+.is-moving .pane { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; background-color: rgba(250, 248, 240, .66) !important; }
 
 /* ───────── stage ───────── */
 .stage { position: fixed; left: 0; top: 0; width: 100%; height: 100%; height: 100lvh; z-index: 2; pointer-events: none; visibility: hidden; }
@@ -277,7 +277,7 @@ a { color: inherit; }
 .pix-hit:focus-visible { outline: 3px solid var(--cobalt); outline-offset: 2px; }
 
 
-/* ───────── services: the computer stays, the three apps are the choices ───────── */
+/* ───────── tools: the computer stays, the two apps are the choices ───────── */
 /* the section scrolls like any page: the computer comes up with it, holds while you read, leaves with it */
 .services { position: relative; z-index: 3; height: 215vh; --o-ink: #101318; --o-paper: #F2F0E6; }
 .services-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; }
@@ -291,7 +291,7 @@ a { color: inherit; }
 .svc-item.is-seen .svc-no { color: transparent; } .svc-item.is-seen .svc-ok { stroke-dashoffset: 0; }
 .svc-name { font: 400 clamp(1.5rem, 2.1vw, 2.1rem)/1 var(--f-display); text-transform: uppercase; letter-spacing: -.005em; transition: color .3s; }
 .svc-state { font: 600 .6875rem/1 var(--f-text); text-transform: uppercase; letter-spacing: .12em; color: rgba(20, 21, 31, .55); white-space: nowrap; }
-.svc-item[data-svc='check'] .svc-state { color: var(--cobalt); } .svc-item[data-svc='verified'] .svc-state { color: var(--ink); }
+.svc-item[data-svc='check'] .svc-state { color: var(--cobalt); } .svc-item[data-svc='index'] .svc-state { color: var(--ink); }
 .svc-tab i { position: relative; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--hair); transition: background .35s, border-color .35s, color .35s, transform .5s var(--ease-out); }
 .svc-tab i::before, .svc-tab i::after { content: ''; position: absolute; left: 50%; top: 50%; width: 12px; height: 1.6px; margin: -.8px 0 0 -6px; background: currentColor; transition: transform .5s var(--ease-out); }
 .svc-tab i::after { transform: rotate(90deg); }
@@ -302,7 +302,7 @@ a { color: inherit; }
 .svc-item.is-hint .svc-tab i { background: var(--cobalt); border-color: var(--cobalt); color: var(--screen); }
 .svc-item.is-hint .svc-name { color: var(--cobalt); }
 .svc-tab:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 4px; border-radius: 8px; }
-/* one reading place: the four texts share the same cell, so nothing below ever moves */
+/* one reading place: the texts share the same cell, so nothing below ever moves */
 .svc-detail { display: grid; align-content: start; min-height: 0; }
 .svc-p { grid-area: 1 / 1; display: grid; gap: clamp(.55rem, 1.4vh, .9rem); align-content: start; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity .35s, transform .6s var(--ease-out), visibility 0s .35s; }
 .svc-p.is-on { opacity: 1; visibility: visible; transform: none; transition: opacity .5s .1s, transform .8s var(--ease-out) .1s, visibility 0s; }
@@ -405,8 +405,25 @@ a { color: inherit; }
 .log li.kept svg path { stroke: var(--signal); stroke-width: 2.4; opacity: 1; }
 .log .st { font-size: .75rem; padding: .35em .6em; border-radius: 999px; background: rgba(20, 21, 31, .07); }
 .log li.kept .st { background: var(--signal); color: var(--ink); }
+.log .log-what { font-weight: 400; line-height: 1.2; opacity: .8; }
 .pane small { opacity: .55; font-size: .75rem; }
 
+
+/* ───────── how the test works · what research says · data and limits ─────────
+   Paper pages with the same build as "what we do": opaque, so the camera can cut behind them, and the same glass panes. */
+.how, .research, .limits { position: relative; z-index: 3; background: var(--paper); min-height: 100svh; padding: calc(var(--nav-h) + 12vh) var(--gutter) 14vh; display: grid; gap: clamp(3rem, 7vh, 5rem); align-content: center; }
+.glassboard--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.glassboard--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pane-chart { display: block; width: 100%; height: 64px; overflow: visible; }
+.pane-chart .c-ink, .pane-chart .c-sig, .pane-chart .c-rule { fill: none; vector-effect: non-scaling-stroke; }
+.pane-chart .c-ink { stroke: var(--ink); stroke-width: 1.4; opacity: .7; }
+.pane-chart .c-sig { stroke: var(--signal); stroke-width: 2.4; }
+.pane-chart .c-rule { stroke: rgba(20, 21, 31, .3); stroke-width: 1; stroke-dasharray: 3 3; }
+.pane-chart .c-bar { fill: rgba(20, 21, 31, .16); }
+.pane-chart .c-dot { fill: rgba(20, 21, 31, .14); }
+.pane-chart .c-dot--on { fill: var(--signal); }
+.pane small a { color: inherit; text-underline-offset: 2px; }
+.check-why a { color: inherit; text-underline-offset: 3px; }
 
 /* ───────── the fluke check ───────── */
 .check { position: relative; z-index: 3; background: var(--ink); min-height: 115svh; padding: calc(var(--nav-h) + 10vh) var(--gutter) 12vh; color: var(--screen); display: grid; gap: clamp(2.5rem, 6vh, 4.5rem); align-content: center; }
@@ -484,6 +501,7 @@ a { color: inherit; }
 .giant--end .accent { color: var(--screen); font-size: .4em; vertical-align: .6em; margin-right: .12em; }
 .end .btn--liquid { background: rgba(237, 235, 224, .94); color: var(--ink); }
 .end .btn-icon { background: rgba(20, 21, 31, .08); }
+.end-links { display: flex; flex-wrap: wrap; gap: 1rem; }
 .end-mark { grid-row: 3; position: relative; width: min(58vw, 880px); aspect-ratio: 900 / 307; }
 .end-logo { will-change: clip-path; }
 .end-logo { position: absolute; inset: 0; background: url('../assets/logo-end.png') center / 100% 100% no-repeat; clip-path: inset(0 100% 0 0); }
@@ -545,7 +563,7 @@ a { color: inherit; }
   .btn { min-height: 54px; }
   .seg-btn { white-space: nowrap; padding: 0 16px; font-size: .875rem; }
   .lg-nav.is-open { background: rgba(244, 241, 233, .95); }
-  .glassboard { grid-template-columns: 1fr; }
+  .glassboard, .glassboard--grid, .glassboard--three { grid-template-columns: 1fr; }
   .what-lens { width: 150px; height: 150px; z-index: 0; }
   .glassboard { z-index: 1; }
   .pane--notes, .pane--check, .pane--log { grid-column: 1; grid-row: auto; }

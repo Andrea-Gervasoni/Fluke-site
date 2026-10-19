@@ -1,5 +1,5 @@
 // A small window of the old interface that says what to do. It is a sign, not a button: 1-bit, a striped title bar,
-// a hard shadow and three boxes that fill in as the apps are opened. Drawn pixel by pixel with the same font as the computer's screen.
+// a hard shadow and one box per app that fills in as it is opened. Drawn pixel by pixel with the same font as the computer's screen.
 import { FONT_ROWS } from './screen-art.js';
 
 const INK = '#101318', PAPER = '#F2F0E6', COBALT = '#0A3AE5';
@@ -24,7 +24,8 @@ export function createWin(canvas, { scale = 2 } = {}) {
   }
   const frame = (x, y, w, h, fill) => { ctx.fillStyle = INK; px(x, y, w, h); ctx.fillStyle = fill; px(x + 1, y + 1, w - 2, h - 2); };
 
-  function draw(seen, total = 3) {
+  const COUNT = { 2: 'TWO', 3: 'THREE' };
+  function draw(seen, total = 2) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.imageSmoothingEnabled = false;
     const W = LW - 4, H = LH - 4;
@@ -37,7 +38,7 @@ export function createWin(canvas, { scale = 2 } = {}) {
     ctx.fillStyle = PAPER; px(tx - 4, 2, tw(t) + 8, 8); text(t, tx, 2);
     ctx.fillStyle = PAPER; px(4, 2, 7, 7); ctx.fillStyle = INK; px(4, 2, 7, 1); px(4, 8, 7, 1); px(4, 2, 1, 7); px(10, 2, 1, 7);
     const done = seen >= total;
-    text(done ? 'ALL THREE OPENED' : 'CLICK THE THREE ICONS', 10, 17);
+    text(done ? (total === 2 ? 'BOTH OPENED' : `ALL ${COUNT[total]} OPENED`) : `CLICK THE ${COUNT[total]} ICONS`, 10, 17);
     text(done ? 'NOW PRESS CONTINUE' : 'ON THE COMPUTER', 10, 27);
     // an arrow: to the right while there is something to open, down once it is time to continue
     ctx.fillStyle = INK;

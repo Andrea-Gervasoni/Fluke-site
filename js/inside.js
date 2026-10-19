@@ -238,7 +238,9 @@ export function createInside({ canvas, ui, data, reduced }) {
     const vOpen = clamp01((p - 0.8) / 0.025);
     const V = L.view;
     const cap = wrap(shown > 0.5 ? 'Same selected result. Different context.' : 'A compelling curve. How many attempts came before it?', V.w - 16);
-    V.h = 18 + 2 * 14 + 6 + cap.length * 10 + 8;
+    // the one line that carries the demo over to the wallets
+    const also = wrap('Same logic, now for wallets.', V.w - 16);
+    V.h = 18 + 2 * 14 + 6 + cap.length * 10 + 4 + also.length * 10 + 8;
     V.y = LH - V.h - 10;
     targets.view = { x: V.x + 14, y: V.y + 24 + (viewT ? 14 : 0) };
     let hitOn = false;
@@ -249,6 +251,7 @@ export function createInside({ canvas, ui, data, reduced }) {
         radio(V.x + 8, V.y + 20, view < 0.5); text('THE WINNING RESULT', V.x + 22, V.y + 21, INK);
         radio(V.x + 8, V.y + 34, view >= 0.5); text('THE WHOLE SEARCH', V.x + 22, V.y + 35, INK);
         cap.forEach((l, i) => text(l, V.x + 8, V.y + 52 + i * 10, INK));
+        also.forEach((l, i) => text(l, V.x + 8, V.y + 56 + (cap.length + i) * 10, COBALT));
         hitOn = true;
         placeHits(V);
       }

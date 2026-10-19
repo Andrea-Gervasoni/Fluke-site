@@ -52,30 +52,38 @@ export function createWhat({ data, glass, reduced, phone }) {
   }
 
   // ───────── the research log ─────────
-  const spark = (path) => {
-    let mn = Infinity, mx = -Infinity;
-    path.forEach((v) => { mn = Math.min(mn, v); mx = Math.max(mx, v); });
-    const pts = path.filter((_, i) => i % 3 === 0);
-    return pts.map((v, i) => `${i ? 'L' : 'M'}${((i / (pts.length - 1)) * 100).toFixed(1)} ${(21 - ((v - mn) / (mx - mn || 1)) * 20).toFixed(1)}`).join('');
-  };
-  // trial 17 is the one that was kept, as on the floppy and in the card file
-  const pathOf = (no) => trials[no === 17 ? best : others[(no - 1) % others.length]].path;
-  function row(no) {
+  // Real entries only: a date (or "Next" for what has not started), what it is, and an honest status.
+  // The row being worked on now wears the signal colour. Add a line here when the work moves; never a result that does not exist.
+  const LOG = [
+    ['Earlier', 'Article 1 on Medium', 'Done'],
+    ['18 Oct', 'Website, first version', 'Done'],
+    ['19 Oct', 'Note No. 2: why wallets', 'Done'],
+    ['19 Oct', 'Week 1: open data in DuckDB', 'Running'],
+    ['Next', 'Skill test, 10,000 flips', 'Planned'],
+    ['Next', 'Persistence check', 'Planned'],
+    ['Next', 'Multiple-testing correction', 'Planned'],
+    ['Next', 'Re-check the 3% study', 'Planned'],
+    ['Next', 'Article 2, on wallets', 'Planned'],
+  ];
+  function row(i) {
+    const [when, what, status] = LOG[i];
     const li = document.createElement('li');
-    if (no === 17) li.className = 'kept';
-    li.innerHTML = `<span>Trial ${String(no).padStart(2, '0')}</span><svg viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path d="${spark(pathOf(no))}"/></svg><span class="st">${no === 17 ? 'Kept' : 'Dropped'}</span>`;
+    if (status === 'Running') li.className = 'kept';
+    li.innerHTML = `<span>${when}</span><span class="log-what">${what}</span><span class="st">${status}</span>`;
     return li;
   }
-  let next = 12;
-  for (; next <= 17; next++) rowsEl.append(row(next));
+  const SLOTS = 6;
+  let next = 0;
+  for (; next < Math.min(SLOTS, LOG.length); next++) rowsEl.append(row(next));
+  next %= LOG.length;
   // the log keeps writing while it is on screen
-  if (!reduced) setInterval(() => {
+  if (!reduced && LOG.length > SLOTS) setInterval(() => {
     if (!visible || document.hidden) return;
     const first = rowsEl.firstElementChild;
     first.classList.add('is-out');
     setTimeout(() => {
       first.remove();
-      const li = row(next); next = next >= 24 ? 1 : next + 1;
+      const li = row(next); next = (next + 1) % LOG.length;
       li.classList.add('is-new'); rowsEl.append(li);
       requestAnimationFrame(() => requestAnimationFrame(() => li.classList.remove('is-new')));
     }, 380);

@@ -28,9 +28,10 @@ for (const p of ['privacy.html', 'terms.html', 'legal-notice.html']) {
 const html = ['index.html', 'privacy.html', 'terms.html', 'legal-notice.html', '404.html'].map(read).join('\n');
 const hosts = new Set([...html.matchAll(/(?:src|href)="https?:\/\/([^/"]+)/g)].map((m) => m[1]));
 const own = existsSync(join(root, 'CNAME')) ? read('CNAME').trim() : '';
-const allowed = new Set(['www.garanteprivacy.it', 'tally.so', own]);
-const odd = [...hosts].filter((h) => !allowed.has(h) && !h.startsWith('[['));
-odd.length ? fail(`unexpected external hosts: ${odd.join(', ')}`) : pass('external links are only the data protection authority and the waitlist form');
+// the data protection authority, and the sources the page cites (study, preprint, report, dataset, method, article 1)
+const allowed = new Set(['www.garanteprivacy.it', 'papers.ssrn.com', 'arxiv.org', 'cointelegraph.com', 'huggingface.co', 'doi.org', 'medium.com', own]);
+const odd = [...hosts].filter((h) => !allowed.has(h) && !h.endsWith('.medium.com') && !h.startsWith('[['));
+odd.length ? fail(`unexpected external hosts: ${odd.join(', ')}`) : pass('external links are only the data protection authority and the cited sources');
 const js = readdirSync(join(root, 'js')).map((f) => f.endsWith('.js') ? read(`js/${f}`) : '').join('\n');
 /document\.cookie|localStorage|indexedDB/.test(js) ? fail('the code touches cookies, localStorage or IndexedDB: update the privacy policy') : pass('no cookies, no localStorage');
 
