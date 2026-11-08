@@ -411,9 +411,12 @@ a { color: inherit; }
 
 /* ───────── how the test works · what research says · data and limits ─────────
    Paper pages with the same build as "what we do": opaque, so the camera can cut behind them, and the same glass panes. */
-.how, .research, .limits { position: relative; z-index: 3; background: var(--paper); min-height: 100svh; padding: calc(var(--nav-h) + 12vh) var(--gutter) 14vh; display: grid; gap: clamp(3rem, 7vh, 5rem); align-content: center; }
-.glassboard--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.glassboard--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.how { position: relative; z-index: 3; background: var(--paper); min-height: 100svh; padding: calc(var(--nav-h) + 12vh) var(--gutter) 14vh; display: grid; gap: clamp(3rem, 7vh, 5rem); align-content: center; }
+.glassboard--mix { grid-template-columns: repeat(12, minmax(0, 1fr)); max-width: 80rem; }
+.glassboard--mix .span3 { grid-column: span 3; } .glassboard--mix .span4 { grid-column: span 4; } .glassboard--mix .span12 { grid-column: 1 / -1; }
+.glassboard--mix .pane h3 { font-size: clamp(1.7rem, 2.6vw, 2.5rem); }
+.pane-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.2rem, 3vw, 3rem); align-items: start; }
+.pane-cols > div { display: grid; gap: 1rem; align-content: start; }
 .pane-chart { display: block; width: 100%; height: 64px; overflow: visible; }
 .pane-chart .c-ink, .pane-chart .c-sig, .pane-chart .c-rule { fill: none; vector-effect: non-scaling-stroke; }
 .pane-chart .c-ink { stroke: var(--ink); stroke-width: 1.4; opacity: .7; }
@@ -563,7 +566,9 @@ a { color: inherit; }
   .btn { min-height: 54px; }
   .seg-btn { white-space: nowrap; padding: 0 16px; font-size: .875rem; }
   .lg-nav.is-open { background: rgba(244, 241, 233, .95); }
-  .glassboard, .glassboard--grid, .glassboard--three { grid-template-columns: 1fr; }
+  .glassboard, .glassboard--mix { grid-template-columns: 1fr; }
+  .glassboard--mix .span3, .glassboard--mix .span4, .glassboard--mix .span12 { grid-column: 1; }
+  .pane-cols { grid-template-columns: 1fr; }
   .what-lens { width: 150px; height: 150px; z-index: 0; }
   .glassboard { z-index: 1; }
   .pane--notes, .pane--check, .pane--log { grid-column: 1; grid-row: auto; }

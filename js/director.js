@@ -60,7 +60,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
 
   function measure() {
     vh = stage.world.view.fh || innerHeight; vw = innerWidth; A = vw / vh;
-    ['top', 'idea', 'winner', 'what', 'services', 'method', 'how', 'research', 'limits', 'check', 'notes', 'faq', 'end'].forEach((id) => {
+    ['top', 'idea', 'winner', 'what', 'services', 'method', 'how', 'check', 'notes', 'faq', 'end'].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
       const r = el.getBoundingClientRect();
@@ -175,7 +175,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
     const p = y + 40;
     const inside = (id) => sec[id] && p >= sec[id].top && p < sec[id].top + sec[id].h;
     if (inside('check') || inside('end')) return true;
-    if (inside('what') || inside('how') || inside('research') || inside('limits') || inside('faq') || inside('notes') || inside('top') || inside('idea')) return false;
+    if (inside('what') || inside('how') || inside('faq') || inside('notes') || inside('top') || inside('idea')) return false;
     if (inside('method')) return true;
     return y >= cuts.faq;
   }
@@ -329,7 +329,7 @@ export function createDirector({ stage, gsap, lenis, phone, reduced, nav, glass 
 
     // which section is the reader in (the menu droplet rests there)
     let here = 'top';
-    for (const id of ['idea', 'winner', 'what', 'services', 'method', 'how', 'research', 'limits', 'check', 'notes', 'faq', 'end']) if (sec[id] && y + vh * 0.45 >= sec[id].top) here = id;
+    for (const id of ['idea', 'winner', 'what', 'services', 'method', 'how', 'check', 'notes', 'faq', 'end']) if (sec[id] && y + vh * 0.45 >= sec[id].top) here = id;
     nav?.setSection(here);
 
     liftLetters();
